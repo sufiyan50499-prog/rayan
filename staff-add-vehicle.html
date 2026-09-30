@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>A1 Car Detailing Factory - Add Vehicle</title>
+
+<!-- OCR LIBRARY -->
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #020617;
+    color: white;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    color: #94a3b8;
+}
+
+.card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    margin-bottom: 18px;
+}
+
+/* CAMERA */
+
+.camera-box {
+    display: none;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+#camera {
+    width: 100%;
+    display: block;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.camera-guide {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 35%;
+    height: 30%;
+    border: 3px solid #22c55e;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.camera-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 9px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.start-camera {
+    background: #2563eb;
+    color: white;
+}
+
+.capture {
+    background: #16a34a;
+    color: white;
+}
+
+.stop-camera {
+    background: #dc2626;
+    color: white;
+}
+
+.scan-button {
+    width: 100%;
+    background: #7c3aed;
+    color: white;
+    margin-bottom: 15px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* FORM */
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    color: #e2e8f0;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #3b82f6;
+}
+
+.vehicle-number-row {
+    display: flex;
+    gap: 8px;
+}
+
+.vehicle-number-row input {
+    flex: 1;
+}
+
+.small-scan {
+    background: #7c3aed;
+    color: white;
+    white-space: nowrap;
+}
+
+.submit-button {
+    width: 100%;
+    background: #16a34a;
+    color: white;
+    margin-top: 10px;
+    font-size: 17px;
+}
+
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.success {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+.error {
+    background: #7f1d1d;
+    color: #fecaca;
+}
+
+.info {
+    background: #1e3a8a;
+    color: #bfdbfe;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 15px;
+    color: #93c5fd;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 12px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .vehicle-number-row {
+        flex-direction: column;
+    }
+
+    .small-scan {
+        width: 100%;
+    }
+
+    .camera-buttons button {
+        flex: 1;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<div class="header">
+    <h1>🚗 A1 Car Detailing Factory</h1>
+    <p>Add Vehicle</p>
+</div>
+
+<div id="message" class="message"></div>
+
+<!-- CAMERA -->
+<div class="card">
+
+    <h2>📷 Number Plate Scanner</h2>
+
+    <button
+        type="button"
+        class="scan-button"
+        onclick="openCamera()">
+        📷 Scan Number Plate
+    </button>
+
+    <div id="cameraBox" class="camera-box">
+
+        <video
+            id="camera"
+            autoplay
+            playsinline>
+        </video>
+
+        <div class="camera-guide"></div>
+
+    </div>
+
+    <div class="camera-buttons">
+
+        <button
+            type="button"
+            class="start-camera"
+            onclick="startCamera()">
+            Start Camera
+        </button>
+
+        <button
+            type="button"
+            id="captureButton"
+            class="capture"
+            onclick="capturePlate()"
+            disabled>
+            📸 Capture & Scan
+        </button>
+
+        <button
+            type="button"
+            class="stop-camera"
+            onclick="stopCamera()">
+            Stop
+        </button>
+
+    </div>
+
+    <div id="loading" class="loading">
+        🔍 Reading number plate...
+        <br>
+        Please wait...
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+</div>
+
+
+<!-- VEHICLE FORM -->
+
+<div class="card">
+
+    <h2>Vehicle Details</h2>
+
+    <form id="vehicleForm">
+
+        <div class="form-group">
+
+            <label>Vehicle Number</label>
+
+            <div class="vehicle-number-row">
+
+                <input
+                    type="text"
+                    id="vehicleNumber"
+                    placeholder="KA01AB1234"
+                    maxlength="15"
+                    required>
+
+                <button
+                    type="button"
+                    class="small-scan"
+                    onclick="openCamera()">
+                    📷 Scan
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Owner Name</label>
+
+            <input
+                type="text"
+                id="ownerName"
+                placeholder="Enter owner name"
+                required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Phone Number</label>
+
+            <input
+                type="tel"
+                id="phone"
+                placeholder="10 digit mobile number"
+                maxlength="10"
+                required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Vehicle Name</label>
+
+            <input
+                type="text"
+                id="vehicleName"
+                placeholder="Example: Swift, Creta, BMW"
+                required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Service Type</label>
+
+            <select id="serviceType" required>
+
+                <option value="">Select Service</option>
+
+                <option value="Full Car Wash">
+                    Full Car Wash
+                </option>
+
+                <option value="Interior Cleaning">
+                    Interior Cleaning
+                </option>
+
+                <option value="Exterior Wash">
+                    Exterior Wash
+                </option>
+
+                <option value="Foam Wash">
+                    Foam Wash
+                </option>
+
+                <option value="PPF">
+                    PPF
+                </option>
+
+                <option value="Maintenance">
+                    Maintenance
+                </option>
+
+                <option value="Rubbing Polish">
+                    Rubbing Polish
+                </option>
+
+                <option value="Detailing">
+                    Detailing
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="submit-button">
+            ➕ Add Vehicle
+        </button>
+
+    </form>
+
+</div>
+
+
+</div>
+
+<script>
+
+/* ============================================================
+   GOOGLE APPS SCRIPT
+   ============================================================ */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwoKohiflL0GrN8fqjZyzo-z16EA3m4Q8hqWavbc8oH1iL7W3rOQ6K1M-WLH6UiUFU8/exec";
+
+
+/* ============================================================
+   CAMERA VARIABLES
+   ============================================================ */
+
+let cameraStream = null;
+
+
+/* ============================================================
+   MESSAGE
+   ============================================================ */
+
+function showMessage(text, type) {
+
+    const message = document.getElementById("message");
+
+    message.innerText = text;
+
+    message.className = "message " + type;
+
+    message.style.display = "block";
+}
+
+
+/* ============================================================
+   OPEN CAMERA
+   ============================================================ */
+
+function openCamera() {
+
+    const cameraBox = document.getElementById("cameraBox");
+
+    cameraBox.style.display = "block";
+
+    startCamera();
+
+}
+
+
+/* ============================================================
+   START CAMERA
+   ============================================================ */
+
+async function startCamera() {
+
+    try {
+
+        if (cameraStream) {
+            stopCamera();
+        }
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                video: {
+                    facingMode: {
+                        ideal: "environment"
+                    },
+
+                    width: {
+                        ideal: 1920
+                    },
+
+                    height: {
+                        ideal: 1080
+                    }
+                },
+
+                audio: false
+
+            });
+
+
+        const video =
+            document.getElementById("camera");
+
+        video.srcObject = cameraStream;
+
+        document.getElementById("captureButton")
+            .disabled = false;
+
+        document.getElementById("cameraBox")
+            .style.display = "block";
+
+        showMessage(
+            "Camera started. Place the number plate inside the green box.",
+            "info"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Camera access failed. Please allow camera permission and use HTTPS.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   STOP CAMERA
+   ============================================================ */
+
+function stopCamera() {
+
+    if (cameraStream) {
+
+        cameraStream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+        cameraStream = null;
+
+    }
+
+    document.getElementById("camera").srcObject = null;
+
+    document.getElementById("captureButton")
+        .disabled = true;
+
+}
+
+
+/* ============================================================
+   CAPTURE IMAGE
+   ============================================================ */
+
+async function capturePlate() {
+
+    const video =
+        document.getElementById("camera");
+
+    const canvas =
+        document.getElementById("canvas");
+
+    if (!cameraStream) {
+
+        showMessage(
+            "Please start the camera first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+
+    const context =
+        canvas.getContext("2d");
+
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    const image =
+        canvas.toDataURL("image/jpeg", 0.95);
+
+
+    await readNumberPlate(image);
+
+}
+
+
+/* ============================================================
+   OCR
+   ============================================================ */
+
+async function readNumberPlate(image) {
+
+    const loading =
+        document.getElementById("loading");
+
+    loading.style.display = "block";
+
+
+    try {
+
+        const result =
+            await Tesseract.recognize(
+
+                image,
+
+                "eng",
+
+                {
+
+                    logger: function(info) {
+
+                        if (info.status === "recognizing text") {
+
+                            loading.innerHTML =
+                                "🔍 Reading number plate... " +
+                                Math.round(info.progress * 100) +
+                                "%";
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+
+        let text =
+            result.data.text;
+
+
+        console.log("OCR RESULT:", text);
+
+
+        /*
+         * Remove spaces and special characters.
+         */
+
+        text =
+            text
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "");
+
+
+        /*
+         * Try to find Indian vehicle
+         * registration format.
+         *
+         * Example:
+         * KA01AB1234
+         */
+
+        const matches =
+            text.match(
+                /[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{3,4}/
+            );
+
+
+        if (matches && matches[0]) {
+
+            const plate =
+                matches[0];
+
+            document.getElementById(
+                "vehicleNumber"
+            ).value = plate;
+
+
+            showMessage(
+                "Number plate detected: " + plate +
+                ". Please verify it before saving.",
+                "success"
+            );
+
+        }
+
+        else {
+
+            /*
+             * If automatic format detection
+             * fails, put OCR result in field.
+             */
+
+            if (text.length > 3) {
+
+                document.getElementById(
+                    "vehicleNumber"
+                ).value = text;
+
+                showMessage(
+                    "Text detected, but the plate format could not be confirmed. Please correct the number.",
+                    "info"
+                );
+
+            }
+
+            else {
+
+                showMessage(
+                    "Could not read the number plate. Move the camera closer and try again.",
+                    "error"
+                );
+
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Number plate scanning failed. Please try again.",
+            "error"
+        );
+
+    }
+
+    finally {
+
+        loading.style.display = "none";
+
+    }
+
+}
+
+
+/* ============================================================
+   FORM SUBMIT
+   ============================================================ */
+
+document
+.getElementById("vehicleForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const vehicleNumber =
+        document
+        .getElementById("vehicleNumber")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    const ownerName =
+        document
+        .getElementById("ownerName")
+        .value
+        .trim();
+
+
+    const phone =
+        document
+        .getElementById("phone")
+        .value
+        .trim();
+
+
+    const vehicleName =
+        document
+        .getElementById("vehicleName")
+        .value
+        .trim();
+
+
+    const serviceType =
+        document
+        .getElementById("serviceType")
+        .value;
+
+
+    if (!vehicleNumber) {
+
+        showMessage(
+            "Please enter or scan the vehicle number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+
+        showMessage(
+            "Please enter a valid 10 digit phone number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const submitButton =
+        document.querySelector(".submit-button");
+
+
+    submitButton.disabled = true;
+
+    submitButton.innerText =
+        "Saving Vehicle...";
+
+
+    try {
+
+        const response =
+            await fetch(API_URL, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+
+                body: JSON.stringify({
+
+                    action: "addVehicle",
+
+                    vehicle_number: vehicleNumber,
+
+                    owner_name: ownerName,
+
+                    phone: phone,
+
+                    vehicle_type: vehicleName,
+
+                    vehicleName: vehicleName,
+
+                    service_type: serviceType,
+
+                    serviceType: serviceType
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        console.log(data);
+
+
+        if (
+            data.success === true ||
+            data.status === "success"
+        ) {
+
+            showMessage(
+                "Vehicle added successfully.",
+                "success"
+            );
+
+
+            document
+                .getElementById("vehicleForm")
+                .reset();
+
+
+        }
+
+        else {
+
+            showMessage(
+                data.message ||
+                data.error ||
+                "Unable to add vehicle.",
+                "error"
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Could not connect to Google Sheets.",
+            "error"
+        );
+
+    }
+
+    finally {
+
+        submitButton.disabled = false;
+
+        submitButton.innerText =
+            "➕ Add Vehicle";
+
+    }
+
+});
+
+
+/* ============================================================
+   STOP CAMERA WHEN PAGE CLOSES
+   ============================================================ */
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+
+        stopCamera();
+
+    }
+);
+
+</script>
+
+</body>
+</html>

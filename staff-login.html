@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1 - Staff Login</title>
+
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+            135deg,
+            #020617,
+            #0f172a,
+            #1e293b
+        );
+        padding: 20px;
+    }
+
+    .login-box {
+        width: 100%;
+        max-width: 400px;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+        text-align: center;
+        color: #0f172a;
+        font-size: 25px;
+        margin-bottom: 7px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    label {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        color: #334155;
+        margin-bottom: 7px;
+    }
+
+    input {
+        width: 100%;
+        padding: 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 5px;
+    }
+
+    .login-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .login-btn:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+    }
+
+    .message {
+        display: none;
+        margin-top: 15px;
+        padding: 11px;
+        border-radius: 7px;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .message.error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .message.success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+    }
+
+    .owner-link {
+        display: block;
+        text-align: center;
+        margin-top: 22px;
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .owner-link:hover {
+        text-decoration: underline;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+
+<h1>Staff Login</h1>
+
+<p class="subtitle">
+    A1 Car Detailing Factory
+</p>
+
+<form id="loginForm">
+
+    <div class="form-group">
+
+        <label for="username">
+            Username
+        </label>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Enter username"
+            autocomplete="username"
+            required
+        >
+
+    </div>
+
+    <div class="form-group">
+
+        <label for="password">
+            Password
+        </label>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+        >
+
+    </div>
+
+    <button
+        type="submit"
+        class="login-btn"
+        id="loginBtn"
+    >
+        Staff Login
+    </button>
+
+</form>
+
+<div
+    id="message"
+    class="message"
+></div>
+
+<a
+    href="login.html"
+    class="owner-link"
+>
+    Owner Login
+</a>
+
+<div class="footer">
+    A1 Car Detailing Factory
+</div>
+
+
+</div>
+
+<script>
+
+/* ============================================================
+   A1 CAR DETAILING FACTORY
+   STAFF LOGIN
+============================================================ */
+
+
+/* ============================================================
+   GOOGLE APPS SCRIPT
+============================================================ */
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbwoKohiflL0GrN8fqjZyzo-z16EA3m4Q8hqWavbc8oH1iL7W3rOQ6K1M-WLH6UiUFU8/exec";
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const usernameInput =
+    document.getElementById("username");
+
+const passwordInput =
+    document.getElementById("password");
+
+const loginBtn =
+    document.getElementById("loginBtn");
+
+const message =
+    document.getElementById("message");
+
+
+/* ============================================================
+   SHOW MESSAGE
+============================================================ */
+
+function showMessage(text, type) {
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+}
+
+
+/* ============================================================
+   LOGIN
+============================================================ */
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const username =
+            usernameInput.value.trim();
+
+        const password =
+            passwordInput.value;
+
+
+        if (!username || !password) {
+
+            showMessage(
+                "Please enter username and password.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        loginBtn.disabled = true;
+
+        loginBtn.textContent =
+            "Checking Login...";
+
+
+        try {
+
+            console.log(
+                "STAFF LOGIN:",
+                username
+            );
+
+
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                action: "staffLogin",
+                                username: username,
+                                password: password
+                            })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server returned HTTP " +
+                    response.status
+                );
+            }
+
+
+            const responseText =
+                await response.text();
+
+
+            console.log(
+                "GOOGLE RESPONSE:",
+                responseText
+            );
+
+
+            let result;
+
+
+            try {
+
+                result =
+                    JSON.parse(responseText);
+
+            } catch(error) {
+
+                throw new Error(
+                    "Invalid response from Google Apps Script."
+                );
+            }
+
+
+            console.log(
+                "LOGIN RESULT:",
+                result
+            );
+
+
+            /* ====================================================
+               LOGIN SUCCESS
+            ==================================================== */
+
+            const loginSuccess =
+                result &&
+                (
+                    result.success === true ||
+                    String(result.success).toLowerCase() === "true" ||
+                    String(result.status).toLowerCase() === "success"
+                );
+
+
+            if (!loginSuccess) {
+
+                showMessage(
+                    result?.message ||
+                    result?.error ||
+                    "Invalid username or password.",
+                    "error"
+                );
+
+                loginBtn.disabled = false;
+
+                loginBtn.textContent =
+                    "Staff Login";
+
+                return;
+            }
+
+
+            /* ====================================================
+               GET STAFF DATA
+            ==================================================== */
+
+            let staff = null;
+
+
+            if (
+                result.staff &&
+                typeof result.staff === "object"
+            ) {
+
+                staff =
+                    result.staff;
+
+            } else if (
+                result.data &&
+                typeof result.data === "object" &&
+                !Array.isArray(result.data)
+            ) {
+
+                staff =
+                    result.data;
+
+            } else if (
+                result.user &&
+                typeof result.user === "object"
+            ) {
+
+                staff =
+                    result.user;
+            }
+
+
+            /* ====================================================
+               FALLBACK
+            ==================================================== */
+
+            if (!staff) {
+
+                staff = {
+
+                    username: username,
+
+                    name: username,
+
+                    addVehicle: true
+                };
+            }
+
+
+            /* ====================================================
+               STAFF NAME
+            ==================================================== */
+
+            const staffName =
+                staff.name ||
+                staff.staffName ||
+                staff.fullName ||
+                username;
+
+
+            /* ====================================================
+               STAFF USERNAME
+            ==================================================== */
+
+            const staffUsername =
+                staff.username ||
+                staff.userName ||
+                staff.Username ||
+                username;
+
+
+            /* ====================================================
+               ADD VEHICLE PERMISSION
+            ==================================================== */
+
+            const addVehiclePermission =
+                staff.addVehicle === true ||
+                staff.addVehicle === "true" ||
+                staff.addVehicle === "TRUE" ||
+                staff.addVehicle === 1 ||
+                staff.addVehicle === "1" ||
+                staff.permission === "addVehicle" ||
+                staff.add_vehicle === true ||
+                staff.add_vehicle === "true";
+
+
+            /* ====================================================
+               FINAL STAFF OBJECT
+            ==================================================== */
+
+            const finalStaff = {
+
+                ...staff,
+
+                name:
+                    staffName,
+
+                username:
+                    staffUsername,
+
+                addVehicle:
+                    addVehiclePermission
+            };
+
+
+            /* ====================================================
+               SAVE LOGIN SESSION
+            ==================================================== */
+
+            sessionStorage.setItem(
+                "staffLoggedIn",
+                "true"
+            );
+
+            sessionStorage.setItem(
+                "a1StaffLoggedIn",
+                "true"
+            );
+
+
+            sessionStorage.setItem(
+                "staffData",
+                JSON.stringify(finalStaff)
+            );
+
+
+            sessionStorage.setItem(
+                "a1StaffName",
+                staffName
+            );
+
+
+            sessionStorage.setItem(
+                "a1StaffUsername",
+                staffUsername
+            );
+
+
+            sessionStorage.setItem(
+                "a1StaffAddVehicle",
+                String(addVehiclePermission)
+            );
+
+
+            /* ====================================================
+               VERIFY
+            ==================================================== */
+
+            console.log(
+                "staffLoggedIn:",
+                sessionStorage.getItem(
+                    "staffLoggedIn"
+                )
+            );
+
+            console.log(
+                "a1StaffLoggedIn:",
+                sessionStorage.getItem(
+                    "a1StaffLoggedIn"
+                )
+            );
+
+
+            /* ====================================================
+               SUCCESS
+            ==================================================== */
+
+            showMessage(
+                "Login successful. Opening dashboard...",
+                "success"
+            );
+
+
+            loginBtn.textContent =
+                "Opening Dashboard...";
+
+
+            /* ====================================================
+               REDIRECT
+            ==================================================== */
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "staff-dashboard.html";
+
+            }, 500);
+
+
+        } catch(error) {
+
+            console.error(
+                "LOGIN ERROR:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to connect to server.",
+                "error"
+            );
+
+
+            loginBtn.disabled = false;
+
+            loginBtn.textContent =
+                "Staff Login";
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>A1 Car Detailing Factory - Add Vehicle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: #020617;
+            color: #f8fafc;
+        }
+
+        .topbar {
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            padding: 16px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .topbar h1 {
+            font-size: 22px;
+        }
+
+        .topbar p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            border: none;
+            background: #334155;
+            color: white;
+            padding: 11px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #475569;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 15px;
+            padding: 28px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 7px;
+        }
+
+        .card-subtitle {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #cbd5e1;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.15);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .submit-btn:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 18px;
+            padding: 13px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            display: block;
+            background: #064e3b;
+            border: 1px solid #059669;
+            color: #d1fae5;
+        }
+
+        .message.error {
+            display: block;
+            background: #450a0a;
+            border: 1px solid #dc2626;
+            color: #fecaca;
+        }
+
+        .info-box {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 9px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            padding: 25px 10px;
+        }
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .back-btn {
+                width: 100%;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .card {
+                padding: 20px 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .card h2 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div>
+            <h1>A1 Car Detailing Factory</h1>
+            <p>Staff - Add Vehicle</p>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">
+            ← Back to Dashboard
+        </button>
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <section class="card">
+
+            <h2>🚗 Add Vehicle</h2>
+
+            <p class="card-subtitle">
+                Enter the customer and vehicle details below.
+            </p>
+
+
+            <form id="vehicleForm">
+
+                <div class="form-grid">
+
+                    <!-- VEHICLE NUMBER -->
+                    <div class="form-group">
+                        <label for="vehicleNumber">
+                            Vehicle Number *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleNumber"
+                            name="vehicleNumber"
+                            placeholder="KA01AB1234"
+                            autocomplete="off"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- OWNER NAME -->
+                    <div class="form-group">
+                        <label for="ownerName">
+                            Owner Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="ownerName"
+                            name="ownerName"
+                            placeholder="Enter owner name"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- PHONE -->
+                    <div class="form-group">
+                        <label for="phone">
+                            Phone Number *
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="10 digit mobile number"
+                            maxlength="10"
+                            inputmode="numeric"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- VEHICLE NAME -->
+                    <div class="form-group">
+                        <label for="vehicleName">
+                            Vehicle Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleName"
+                            name="vehicleName"
+                            placeholder="Example: Swift, Creta, BMW"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- SERVICE -->
+                    <div class="form-group full">
+                        <label for="serviceType">
+                            Service Type *
+                        </label>
+
+                        <select
+                            id="serviceType"
+                            name="serviceType"
+                            required
+                        >
+                            <option value="">Select Service</option>
+
+                            <option value="Full Car Wash">
+                                Full Car Wash
+                            </option>
+
+                            <option value="Interior Cleaning">
+                                Interior Cleaning
+                            </option>
+
+                            <option value="Body Wash">
+                                Body Wash
+                            </option>
+
+                            <option value="Foam Wash">
+                                Foam Wash
+                            </option>
+
+                            <option value="PPF">
+                                PPF
+                            </option>
+
+                            <option value="Maintenance">
+                                Maintenance
+                            </option>
+
+                            <option value="Rubbing Polish">
+                                Rubbing Polish
+                            </option>
+
+                            <option value="Detailing">
+                                Detailing
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+                <div id="message" class="message"></div>
+
+
+                <!-- SUBMIT -->
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="submit-btn"
+                >
+                    🚗 Add Vehicle
+                </button>
+
+            </form>
+
+
+            <div class="info-box">
+                <strong>Note:</strong><br>
+                Vehicle amount/payment can be entered when the vehicle
+                is exited from the service. The vehicle will initially
+                be saved with <strong>Inside</strong> status.
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+        Powered by Abu Sufiyan M © 2026
+    </footer>
+
+
+<script>
+
+    // ============================================================
+    // A1 CAR DETAILING FACTORY
+    // GOOGLE APPS SCRIPT API
+    // ============================================================
+
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbwoKohiflL0GrN8fqjZyzo-z16EA3m4Q8hqWavbc8oH1iL7W3rOQ6K1M-WLH6UiUFU8/exec";
+
+
+    // ============================================================
+    // GET STAFF INFORMATION
+    // ============================================================
+
+    function getStaffData() {
+
+        try {
+
+            const data =
+                sessionStorage.getItem("staffData");
+
+            if (data) {
+                return JSON.parse(data);
+            }
+
+        } catch (error) {
+            console.log("Staff data error:", error);
+        }
+
+        return null;
+    }
+
+
+    // ============================================================
+    // CHECK STAFF LOGIN
+    // ============================================================
+
+    function checkStaffLogin() {
+
+        const loggedIn =
+            sessionStorage.getItem("staffLoggedIn");
+
+        const oldLoggedIn =
+            sessionStorage.getItem("a1StaffLoggedIn");
+
+
+        if (
+            loggedIn !== "true" &&
+            oldLoggedIn !== "true"
+        ) {
+
+            alert("Please login as staff first.");
+
+            window.location.href =
+                "staff-login.html";
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    // ============================================================
+    // CHECK ADD VEHICLE PERMISSION
+    // ============================================================
+
+    function checkPermission() {
+
+        const staff =
+            getStaffData();
+
+        if (!staff) {
+            return true;
+        }
+
+
+        let permission =
+            staff.addVehicle ??
+            staff.allowAddVehicle ??
+            staff.add_vehicle ??
+            staff.permission;
+
+
+        if (
+            permission === false ||
+            String(permission).toUpperCase() === "NO" ||
+            String(permission).toUpperCase() === "FALSE" ||
+            String(permission).toUpperCase() === "DISABLED"
+        ) {
+
+            alert(
+                "You do not have permission to add vehicles."
+            );
+
+            window.location.href =
+                "staff-dashboard.html";
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    // ============================================================
+    // PAGE START
+    // ============================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            if (!checkStaffLogin()) {
+                return;
+            }
+
+            if (!checkPermission()) {
+                return;
+            }
+
+
+            // Vehicle number uppercase
+            document
+                .getElementById("vehicleNumber")
+                .addEventListener(
+                    "input",
+                    function () {
+
+                        this.value =
+                            this.value
+                                .toUpperCase()
+                                .replace(/\s/g, "");
+
+                    }
+                );
+
+
+            // Phone only numbers
+            document
+                .getElementById("phone")
+                .addEventListener(
+                    "input",
+                    function () {
+
+                        this.value =
+                            this.value
+                                .replace(/\D/g, "")
+                                .slice(0, 10);
+
+                    }
+                );
+
+        }
+    );
+
+
+    // ============================================================
+    // SHOW MESSAGE
+    // ============================================================
+
+    function showMessage(
+        text,
+        type
+    ) {
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent = text;
+
+        message.className =
+            "message " + type;
+
+    }
+
+
+    // ============================================================
+    // ADD VEHICLE
+    // ============================================================
+
+    document
+        .getElementById("vehicleForm")
+        .addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const submitBtn =
+                    document.getElementById("submitBtn");
+
+
+                // ------------------------------------------------
+                // GET VALUES
+                // ------------------------------------------------
+
+                const vehicleNumber =
+                    document
+                        .getElementById("vehicleNumber")
+                        .value
+                        .trim()
+                        .toUpperCase();
+
+
+                const ownerName =
+                    document
+                        .getElementById("ownerName")
+                        .value
+                        .trim();
+
+
+                const phone =
+                    document
+                        .getElementById("phone")
+                        .value
+                        .trim();
+
+
+                const vehicleName =
+                    document
+                        .getElementById("vehicleName")
+                        .value
+                        .trim();
+
+
+                const serviceType =
+                    document
+                        .getElementById("serviceType")
+                        .value;
+
+
+                // ------------------------------------------------
+                // VALIDATION
+                // ------------------------------------------------
+
+                if (!vehicleNumber) {
+
+                    showMessage(
+                        "Please enter vehicle number.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!ownerName) {
+
+                    showMessage(
+                        "Please enter owner name.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!/^[0-9]{10}$/.test(phone)) {
+
+                    showMessage(
+                        "Please enter a valid 10 digit phone number.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!vehicleName) {
+
+                    showMessage(
+                        "Please enter vehicle name.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!serviceType) {
+
+                    showMessage(
+                        "Please select service type.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                // ------------------------------------------------
+                // STAFF NAME
+                // ------------------------------------------------
+
+                const staff =
+                    getStaffData();
+
+
+                const staffName =
+                    staff?.name ||
+                    staff?.staffName ||
+                    staff?.username ||
+                    sessionStorage.getItem("a1StaffName") ||
+                    sessionStorage.getItem("a1StaffUsername") ||
+                    "Staff";
+
+
+                // ------------------------------------------------
+                // DISABLE BUTTON
+                // ------------------------------------------------
+
+                submitBtn.disabled = true;
+
+                submitBtn.textContent =
+                    "Adding Vehicle...";
+
+
+                showMessage(
+                    "Saving vehicle...",
+                    "success"
+                );
+
+
+                // ------------------------------------------------
+                // DATA
+                // ------------------------------------------------
+
+                const data = {
+
+                    action: "addVehicle",
+
+                    vehicle_number:
+                        vehicleNumber,
+
+                    vehicleNumber:
+                        vehicleNumber,
+
+                    owner_name:
+                        ownerName,
+
+                    ownerName:
+                        ownerName,
+
+                    phone:
+                        phone,
+
+                    vehicle_type:
+                        vehicleName,
+
+                    vehicleName:
+                        vehicleName,
+
+                    service_type:
+                        serviceType,
+
+                    serviceType:
+                        serviceType,
+
+                    added_by:
+                        staffName,
+
+                    addedBy:
+                        staffName
+
+                };
+
+
+                // ------------------------------------------------
+                // SEND TO GOOGLE APPS SCRIPT
+                // ------------------------------------------------
+
+                try {
+
+                    const response =
+                        await fetch(
+                            API_URL,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "text/plain;charset=utf-8"
+                                },
+
+                                body:
+                                    JSON.stringify(data)
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    console.log(
+                        "Server response:",
+                        text
+                    );
+
+
+                    let result;
+
+
+                    try {
+
+                        result =
+                            JSON.parse(text);
+
+                    } catch (error) {
+
+                        throw new Error(
+                            "Invalid response from Google Apps Script."
+                        );
+
+                    }
+
+
+                    // ------------------------------------------------
+                    // SUCCESS
+                    // ------------------------------------------------
+
+                    if (
+                        result.success === true ||
+                        result.success === "true" ||
+                        result.status === "success"
+                    ) {
+
+                        showMessage(
+                            "✅ Vehicle added successfully!",
+                            "success"
+                        );
+
+
+                        document
+                            .getElementById("vehicleForm")
+                            .reset();
+
+
+                        // Go back after 1.5 seconds
+                        setTimeout(
+                            function () {
+
+                                window.location.href =
+                                    "staff-dashboard.html";
+
+                            },
+                            1500
+                        );
+
+
+                    } else {
+
+                        const errorMessage =
+                            result.message ||
+                            result.error ||
+                            "Vehicle could not be added.";
+
+
+                        showMessage(
+                            "❌ " + errorMessage,
+                            "error"
+                        );
+
+
+                        submitBtn.disabled =
+                            false;
+
+                        submitBtn.textContent =
+                            "🚗 Add Vehicle";
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Add vehicle error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        "❌ Cannot connect to Google Sheets. Please check your internet connection and Apps Script deployment.",
+                        "error"
+                    );
+
+
+                    submitBtn.disabled =
+                        false;
+
+                    submitBtn.textContent =
+                        "🚗 Add Vehicle";
+
+                }
+
+            }
+        );
+
+
+    // ============================================================
+    // BACK TO STAFF DASHBOARD
+    // ============================================================
+
+    function goBack() {
+
+        window.location.href =
+            "staff-dashboard.html";
+
+    }
+
+</script>
+
+</body>
+</html>

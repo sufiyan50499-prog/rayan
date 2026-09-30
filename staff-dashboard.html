@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>A1 - Staff Dashboard</title>
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+
+    body {
+        min-height: 100vh;
+        background: #020617;
+        color: #e2e8f0;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .header {
+
+        height: 70px;
+
+        background: #0f172a;
+
+        border-bottom:
+            1px solid #334155;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 0 25px;
+
+        position: sticky;
+
+        top: 0;
+
+        z-index: 100;
+    }
+
+
+    .brand h1 {
+
+        font-size: 20px;
+
+        color: white;
+    }
+
+
+    .brand p {
+
+        font-size: 12px;
+
+        color: #94a3b8;
+
+        margin-top: 3px;
+    }
+
+
+    .header-right {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+    }
+
+
+    .staff-name {
+
+        color: #cbd5e1;
+
+        font-size: 14px;
+
+        font-weight: bold;
+    }
+
+
+    .logout-btn {
+
+        border: none;
+
+        background: #dc2626;
+
+        color: white;
+
+        padding: 9px 15px;
+
+        border-radius: 7px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+    }
+
+
+    .logout-btn:hover {
+
+        background: #b91c1c;
+    }
+
+
+    /* =====================================================
+       MAIN
+    ===================================================== */
+
+    .container {
+
+        max-width: 1400px;
+
+        margin: auto;
+
+        padding: 25px;
+    }
+
+
+    .welcome {
+
+        background: #0f172a;
+
+        border:
+            1px solid #334155;
+
+        border-radius: 12px;
+
+        padding: 22px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .welcome h2 {
+
+        color: white;
+
+        font-size: 22px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .welcome p {
+
+        color: #94a3b8;
+
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       CARDS
+    ===================================================== */
+
+    .cards {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .card {
+
+        background: #0f172a;
+
+        border:
+            1px solid #334155;
+
+        border-radius: 12px;
+
+        padding: 20px;
+    }
+
+
+    .card-title {
+
+        color: #94a3b8;
+
+        font-size: 13px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .card-value {
+
+        color: white;
+
+        font-size: 28px;
+
+        font-weight: bold;
+    }
+
+
+    /* =====================================================
+       ACTIONS
+    ===================================================== */
+
+    .actions {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .action-card {
+
+        background: #0f172a;
+
+        border:
+            1px solid #334155;
+
+        border-radius: 12px;
+
+        padding: 22px;
+    }
+
+
+    .action-card h3 {
+
+        color: white;
+
+        margin-bottom: 8px;
+    }
+
+
+    .action-card p {
+
+        color: #94a3b8;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+
+        margin-bottom: 15px;
+    }
+
+
+    .action-btn {
+
+        display: inline-block;
+
+        text-decoration: none;
+
+        background: #2563eb;
+
+        color: white;
+
+        padding: 10px 15px;
+
+        border-radius: 7px;
+
+        border: none;
+
+        cursor: pointer;
+
+        font-weight: bold;
+
+        font-size: 13px;
+    }
+
+
+    .action-btn:hover {
+
+        background: #1d4ed8;
+    }
+
+
+    /* =====================================================
+       VEHICLES
+    ===================================================== */
+
+    .section {
+
+        background: #0f172a;
+
+        border:
+            1px solid #334155;
+
+        border-radius: 12px;
+
+        overflow: hidden;
+    }
+
+
+    .section-header {
+
+        padding: 18px 20px;
+
+        border-bottom:
+            1px solid #334155;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+    }
+
+
+    .section-header h3 {
+
+        color: white;
+
+        font-size: 17px;
+    }
+
+
+    .refresh-btn {
+
+        background: #334155;
+
+        color: white;
+
+        border: none;
+
+        padding: 8px 13px;
+
+        border-radius: 6px;
+
+        cursor: pointer;
+    }
+
+
+    .refresh-btn:hover {
+
+        background: #475569;
+    }
+
+
+    .table-container {
+
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+
+    table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        min-width: 900px;
+    }
+
+
+    th {
+
+        background: #020617;
+
+        color: #94a3b8;
+
+        font-size: 12px;
+
+        text-align: left;
+
+        padding: 13px;
+
+        border-bottom:
+            1px solid #334155;
+    }
+
+
+    td {
+
+        padding: 13px;
+
+        border-bottom:
+            1px solid #1e293b;
+
+        color: #cbd5e1;
+
+        font-size: 13px;
+    }
+
+
+    tr:hover td {
+
+        background: #111c31;
+    }
+
+
+    .status {
+
+        display: inline-block;
+
+        padding: 5px 9px;
+
+        border-radius: 20px;
+
+        font-size: 11px;
+
+        font-weight: bold;
+    }
+
+
+    .inside {
+
+        background: #fef3c7;
+
+        color: #92400e;
+    }
+
+
+    .completed {
+
+        background: #dcfce7;
+
+        color: #166534;
+    }
+
+
+    .exit-btn {
+
+        background: #dc2626;
+
+        border: none;
+
+        color: white;
+
+        padding: 7px 10px;
+
+        border-radius: 6px;
+
+        cursor: pointer;
+
+        font-size: 12px;
+
+        font-weight: bold;
+    }
+
+
+    .exit-btn:hover {
+
+        background: #b91c1c;
+    }
+
+
+    .empty {
+
+        text-align: center;
+
+        padding: 35px;
+
+        color: #64748b;
+    }
+
+
+    .loading {
+
+        text-align: center;
+
+        padding: 35px;
+
+        color: #94a3b8;
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+        .cards {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .actions {
+
+            grid-template-columns:
+                1fr;
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .header {
+
+            height: auto;
+
+            min-height: 70px;
+
+            padding: 12px 15px;
+
+            gap: 10px;
+        }
+
+
+        .brand h1 {
+
+            font-size: 16px;
+        }
+
+
+        .staff-name {
+
+            display: none;
+        }
+
+
+        .container {
+
+            padding: 15px;
+        }
+
+
+        .cards {
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 10px;
+        }
+
+
+        .card {
+
+            padding: 15px;
+        }
+
+
+        .card-value {
+
+            font-size: 22px;
+        }
+
+
+        .welcome {
+
+            padding: 18px;
+        }
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+
+<header class="header">
+
+
+<div class="brand">
+
+    <h1>
+        A1 Car Detailing Factory
+    </h1>
+
+    <p>
+        Staff Dashboard
+    </p>
+
+</div>
+
+
+<div class="header-right">
+
+    <span
+        class="staff-name"
+        id="staffName"
+    >
+        Staff
+    </span>
+
+
+    <button
+        class="logout-btn"
+        onclick="logout()"
+    >
+        Logout
+    </button>
+
+</div>
+
+
+</header>
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+
+<main class="container">
+
+
+<!-- WELCOME -->
+
+<div class="welcome">
+
+    <h2>
+        Welcome, <span id="welcomeName">Staff</span>
+    </h2>
+
+    <p>
+        Manage vehicle service records and view current vehicles.
+    </p>
+
+</div>
+
+
+<!-- ========================================================
+     STAT CARDS
+======================================================== -->
+
+<div class="cards">
+
+    <div class="card">
+
+        <div class="card-title">
+            Total Vehicles
+        </div>
+
+        <div
+            class="card-value"
+            id="totalVehicles"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Active Vehicles
+        </div>
+
+        <div
+            class="card-value"
+            id="activeVehicles"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Completed Vehicles
+        </div>
+
+        <div
+            class="card-value"
+            id="completedVehicles"
+        >
+            0
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Today's Revenue
+        </div>
+
+        <div
+            class="card-value"
+            id="todayRevenue"
+        >
+            ₹0
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     ACTIONS
+======================================================== -->
+
+<div class="actions">
+
+
+    <div class="action-card">
+
+        <h3>
+            Add Vehicle
+        </h3>
+
+        <p>
+            Add a new vehicle to the service records.
+        </p>
+
+        <button
+            class="action-btn"
+            id="addVehicleBtn"
+            onclick="openAddVehicle()"
+        >
+            Add Vehicle
+        </button>
+
+    </div>
+
+
+    <div class="action-card">
+
+        <h3>
+            Vehicle Records
+        </h3>
+
+        <p>
+            View active and completed vehicle service records.
+        </p>
+
+        <button
+            class="action-btn"
+            onclick="loadVehicles()"
+        >
+            Refresh Records
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================
+     VEHICLE RECORDS
+======================================================== -->
+
+<section class="section">
+
+    <div class="section-header">
+
+        <h3>
+            Vehicle Records
+        </h3>
+
+
+        <button
+            class="refresh-btn"
+            onclick="loadVehicles()"
+        >
+            Refresh
+        </button>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>No.</th>
+
+                    <th>Vehicle Number</th>
+
+                    <th>Owner</th>
+
+                    <th>Phone</th>
+
+                    <th>Vehicle</th>
+
+                    <th>Service</th>
+
+                    <th>Entry Time</th>
+
+                    <th>Amount</th>
+
+                    <th>Payment</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="vehicleTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="11"
+                        class="loading"
+                    >
+                        Loading vehicles...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+<script>
+
+/* ============================================================
+   A1 STAFF DASHBOARD
+============================================================ */
+
+
+/* ============================================================
+   GOOGLE APPS SCRIPT
+============================================================ */
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbwoKohiflL0GrN8fqjZyzo-z16EA3m4Q8hqWavbc8oH1iL7W3rOQ6K1M-WLH6UiUFU8/exec";
+
+
+/* ============================================================
+   LOGIN CHECK
+============================================================ */
+
+function checkLogin() {
+
+    const loggedIn =
+        sessionStorage.getItem(
+            "staffLoggedIn"
+        );
+
+    const loggedIn2 =
+        sessionStorage.getItem(
+            "a1StaffLoggedIn"
+        );
+
+
+    if (
+        loggedIn !== "true" &&
+        loggedIn2 !== "true"
+    ) {
+
+        window.location.href =
+            "staff-login.html";
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+/* ============================================================
+   STAFF INFORMATION
+============================================================ */
+
+function loadStaffInformation() {
+
+    const staffName =
+        sessionStorage.getItem(
+            "a1StaffName"
+        ) ||
+        "Staff";
+
+
+    document.getElementById(
+        "staffName"
+    ).textContent =
+        staffName;
+
+
+    document.getElementById(
+        "welcomeName"
+    ).textContent =
+        staffName;
+
+
+    const permission =
+        sessionStorage.getItem(
+            "a1StaffAddVehicle"
+        );
+
+
+    const addVehicleBtn =
+        document.getElementById(
+            "addVehicleBtn"
+        );
+
+
+    if (
+        permission === "true"
+    ) {
+
+        addVehicleBtn.style.display =
+            "inline-block";
+
+    } else {
+
+        addVehicleBtn.style.display =
+            "none";
+    }
+
+}
+
+
+/* ============================================================
+   ADD VEHICLE
+============================================================ */
+
+function openAddVehicle() {
+
+    const permission =
+        sessionStorage.getItem(
+            "a1StaffAddVehicle"
+        );
+
+
+    if (permission !== "true") {
+
+        alert(
+            "You do not have permission to add vehicles."
+        );
+
+        return;
+    }
+
+
+    /*
+     * Change this filename if your actual
+     * add vehicle page has another name.
+     */
+
+    window.location.href =
+        "index.html";
+}
+
+
+/* ============================================================
+   LOAD VEHICLES
+============================================================ */
+
+async function loadVehicles() {
+
+    const tableBody =
+        document.getElementById(
+            "vehicleTableBody"
+        );
+
+
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="11" class="loading">
+                Loading vehicles...
+            </td>
+        </tr>
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "?action=get&t=" +
+                Date.now(),
+                {
+                    method: "GET",
+
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+        }
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            "VEHICLES RESPONSE:",
+            text
+        );
+
+
+        let result;
+
+
+        try {
+
+            result =
+                JSON.parse(text);
+
+        } catch(error) {
+
+            throw new Error(
+                "Invalid vehicle data response."
+            );
+        }
+
+
+        let vehicles = [];
+
+
+        if (Array.isArray(result)) {
+
+            vehicles =
+                result;
+
+        } else if (
+            Array.isArray(result.data)
+        ) {
+
+            vehicles =
+                result.data;
+
+        } else if (
+            Array.isArray(result.records)
+        ) {
+
+            vehicles =
+                result.records;
+
+        } else if (
+            Array.isArray(result.vehicles)
+        ) {
+
+            vehicles =
+                result.vehicles;
+
+        } else if (
+            Array.isArray(result.rows)
+        ) {
+
+            vehicles =
+                result.rows;
+        }
+
+
+        displayVehicles(
+            vehicles
+        );
+
+
+    } catch(error) {
+
+        console.error(
+            "VEHICLE LOAD ERROR:",
+            error
+        );
+
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="11" class="empty">
+                    Unable to load vehicle records.
+                    <br><br>
+                    ${escapeHTML(error.message)}
+                </td>
+            </tr>
+        `;
+    }
+
+}
+
+
+/* ============================================================
+   DISPLAY VEHICLES
+============================================================ */
+
+function displayVehicles(
+    vehicles
+) {
+
+    const tableBody =
+        document.getElementById(
+            "vehicleTableBody"
+        );
+
+
+    if (
+        !vehicles ||
+        vehicles.length === 0
+    ) {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="11" class="empty">
+                    No vehicle records found.
+                </td>
+            </tr>
+        `;
+
+        updateCards([]);
+
+        return;
+    }
+
+
+    updateCards(
+        vehicles
+    );
+
+
+    tableBody.innerHTML =
+        vehicles.map(
+            function(vehicle, index) {
+
+                const vehicleNumber =
+                    getValue(
+                        vehicle,
+                        [
+                            "vehicle_number",
+                            "vehicleNumber",
+                            "Vehicle Number",
+                            "number"
+                        ]
+                    );
+
+
+                const owner =
+                    getValue(
+                        vehicle,
+                        [
+                            "owner_name",
+                            "ownerName",
+                            "Owner",
+                            "owner"
+                        ]
+                    );
+
+
+                const phone =
+                    getValue(
+                        vehicle,
+                        [
+                            "phone",
+                            "Phone"
+                        ]
+                    );
+
+
+                const vehicleName =
+                    getValue(
+                        vehicle,
+                        [
+                            "vehicle_type",
+                            "vehicleType",
+                            "Vehicle",
+                            "vehicle"
+                        ]
+                    );
+
+
+                const service =
+                    getValue(
+                        vehicle,
+                        [
+                            "service_type",
+                            "serviceType",
+                            "Service",
+                            "service"
+                        ]
+                    );
+
+
+                const entryTime =
+                    getValue(
+                        vehicle,
+                        [
+                            "entry_time",
+                            "entryTime",
+                            "Entry Time"
+                        ]
+                    );
+
+
+                const amount =
+                    getValue(
+                        vehicle,
+                        [
+                            "amount",
+                            "Amount"
+                        ]
+                    );
+
+
+                const payment =
+                    getValue(
+                        vehicle,
+                        [
+                            "payment",
+                            "paymentMethod",
+                            "Payment"
+                        ]
+                    );
+
+
+                const status =
+                    getValue(
+                        vehicle,
+                        [
+                            "status",
+                            "Status"
+                        ]
+                    ) || "Inside";
+
+
+                const isCompleted =
+                    String(status)
+                        .toLowerCase()
+                        .includes(
+                            "complete"
+                        );
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${index + 1}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(vehicleNumber)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(owner)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(phone)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(vehicleName)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(service)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(entryTime)}
+                        </td>
+
+                        <td>
+                            ₹${escapeHTML(amount)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(payment)}
+                        </td>
+
+                        <td>
+
+                            <span class="status ${
+                                isCompleted
+                                    ? "completed"
+                                    : "inside"
+                            }">
+
+                                ${
+                                    isCompleted
+                                        ? "Completed"
+                                        : "Inside"
+                                }
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            ${
+                                isCompleted
+                                    ? "-"
+                                    : `
+                                        <button
+                                            class="exit-btn"
+                                            onclick="vehicleExit(${index})"
+                                        >
+                                            Exit
+                                        </button>
+                                    `
+                            }
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* ============================================================
+   UPDATE CARDS
+============================================================ */
+
+function updateCards(
+    vehicles
+) {
+
+    const total =
+        vehicles.length;
+
+
+    const active =
+        vehicles.filter(
+            function(vehicle) {
+
+                const status =
+                    getValue(
+                        vehicle,
+                        [
+                            "status",
+                            "Status"
+                        ]
+                    );
+
+                return !String(status)
+                    .toLowerCase()
+                    .includes(
+                        "complete"
+                    );
+            }
+        ).length;
+
+
+    const completed =
+        total - active;
+
+
+    let revenue = 0;
+
+
+    vehicles.forEach(
+        function(vehicle) {
+
+            const status =
+                getValue(
+                    vehicle,
+                    [
+                        "status",
+                        "Status"
+                    ]
+                );
+
+
+            if (
+                String(status)
+                    .toLowerCase()
+                    .includes(
+                        "complete"
+                    )
+            ) {
+
+                const amount =
+                    parseFloat(
+                        getValue(
+                            vehicle,
+                            [
+                                "amount",
+                                "Amount"
+                            ]
+                        )
+                    ) || 0;
+
+
+                revenue +=
+                    amount;
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalVehicles"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "activeVehicles"
+    ).textContent =
+        active;
+
+
+    document.getElementById(
+        "completedVehicles"
+    ).textContent =
+        completed;
+
+
+    document.getElementById(
+        "todayRevenue"
+    ).textContent =
+        "₹" +
+        revenue.toLocaleString(
+            "en-IN"
+        );
+}
+
+
+/* ============================================================
+   VEHICLE EXIT
+============================================================ */
+
+async function vehicleExit(
+    index
+) {
+
+    alert(
+        "Vehicle exit processing can be connected to your existing exit system."
+    );
+
+}
+
+
+/* ============================================================
+   GET VALUE
+============================================================ */
+
+function getValue(
+    object,
+    keys
+) {
+
+    if (!object) {
+        return "";
+    }
+
+
+    for (
+        let i = 0;
+        i < keys.length;
+        i++
+    ) {
+
+        const key =
+            keys[i];
+
+
+        if (
+            object[key] !== undefined &&
+            object[key] !== null
+        ) {
+
+            return String(
+                object[key]
+            );
+        }
+    }
+
+
+    return "";
+}
+
+
+/* ============================================================
+   HTML ESCAPE
+============================================================ */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+function logout() {
+
+    sessionStorage.removeItem(
+        "staffLoggedIn"
+    );
+
+    sessionStorage.removeItem(
+        "a1StaffLoggedIn"
+    );
+
+    sessionStorage.removeItem(
+        "staffData"
+    );
+
+    sessionStorage.removeItem(
+        "a1StaffName"
+    );
+
+    sessionStorage.removeItem(
+        "a1StaffUsername"
+    );
+
+    sessionStorage.removeItem(
+        "a1StaffAddVehicle"
+    );
+
+
+    window.location.href =
+        "staff-login.html";
+}
+
+
+/* ============================================================
+   PAGE START
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        if (!checkLogin()) {
+            return;
+        }
+
+
+        loadStaffInformation();
+
+        loadVehicles();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
